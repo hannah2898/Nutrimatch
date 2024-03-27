@@ -1,0 +1,10 @@
+extends common/layout
+block layout-content
+    .content 
+        h1.heading Nutrimatch
+        p.subheading A healthy twist for your favorite meals
+        p.description Explore our collection of healthy alternatives that breathe new life into traditional favorites, ensuring both taste and wellness are at the forefront of your dining experience.
+        form(action="/FindRecipes") 
+            .find-recipe-btn
+                button(type="submit") Find Recipes
+        

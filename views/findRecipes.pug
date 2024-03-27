@@ -1,0 +1,92 @@
+extends common/layout2
+block layout-content
+    .glass.form-block 
+        h1.form-heading Find Recipes
+        p.form-subheading Fill in the form and get the recipes curated to your needs
+        form(action="/findRecipe/submit",method="POST")
+            .cuisine
+                .cuisine-label
+                    label(for="cuisine").label Cuisine 
+                .dropdown
+                    select(name="cuisine" id="cuisine" value ="Select One").select
+                        option(value="" selected) Select One
+                        option(value="African") African
+                        option(value="Asian") Asian
+                        option(value="American") American
+                        option(value="British") British
+                        option(value="Cajun") Cajun
+                        option(value="Caribbean") Caribbean
+                        option(value="Chinese") Chinese
+                        option(value="Eastern European") Eastern European
+                        option(value="European") European
+                        option(value="French") French
+                        option(value="German") German
+                        option(value="Greek") Greek
+                        option(value="Indian") Indian
+                        option(value="Irish") Irish
+                        option(value="Italian") Italian
+                        option(value="Japanese") Japanese
+                        option(value="Jewish") Jewish
+                        option(value="Korean") Korean
+                        option(value="Latin American") Latin American
+                        option(value="Mediterranean") Mediterranean
+                        option(value="Mexican") Mexican
+                        option(value="Middle Eastern") Middle Eastern
+                        option(value="Nordic") Nordic
+                        option(value="Southern") Southern
+                        option(value="Spanish") Spanish
+                        option(value="Thai") Thai
+                        option(value="Vietnamese") Vietnamese
+                .diet
+                    label(for="diet").label Dietary Preferences
+                .dropdown
+                    select(name="diet" id="diet" value ="Select One").select
+                        option(value="" selected) Select One
+                        option(value="Gluten Free") Gluten Free
+                        option(value="Ketogenic") Ketogenic
+                        option(value="Vegetarian") Vegetarian
+                        option(value="Lacto-Vegetarian") Lacto-Vegetarian
+                        option(value="Ovo-Vegetarian") Ovo-Vegetarian
+                        option(value="Vegan") Vegan
+                        option(value="Pescetarian") Pescetarian
+                        option(value="Paleo") Paleo
+                        option(value="Primal") Primal
+                        option(value="Low FODMAP") Low FODMAP
+                        option(value="Whole30") Whole30
+            .allergies
+                input(type="hidden", name="intolerances",value="")
+                label(for="intolerances").label Allergies
+                .options
+                    .row
+                        input(type="checkbox" id="Diary" name="intolerances" value="Diary").checkbox
+                        label(for="Diary") Diary
+                        input(type="checkbox" id="Peanut" name="intolerances" value="Peanut").checkbox
+                        label(for="Peanut") Peanut
+                        input(type="checkbox" id="Gluten" name="intolerances" value="Gluten").checkbox
+                        label(for="Gluten") Gluten 
+                    .row
+                        input(type="checkbox" id="Soy" name="intolerances" value="Soy").checkbox
+                        label(for="Soy") Soy
+                        input(type="checkbox" id="Sulfite" name="intolerances" value="Sulfite").checkbox
+                        label(for="Sulfite") Sulfite
+                        input(type="checkbox" id="Shellfish" name="intolerances" value="Shellfish").checkbox
+                        label(for="Shellfish") Shellfish
+                    .row
+                        input(type="checkbox" id="Egg" name="intolerances" value="Egg").checkbox
+                        label(for="Egg") Egg
+                        input(type="checkbox" id="Sesame" name="intolerances" value="Sesame").checkbox
+                        label(for="Sesame") Sesame
+                        input(type="checkbox" id="Tree Nut" name="intolerances" value="Tree Nut").checkbox
+                        label(for="Tree Nut") Tree Nut
+                    .row
+                        input(type="checkbox" id="Grain" name="intolerances" value="Grain").checkbox
+                        label(for="Grain") Grain
+                        input(type="checkbox" id="Wheat" name="intolerances" value="Wheat").checkbox
+                        label(for="Wheat") Wheat
+                        input(type="checkbox" id="Seafood" name="intolerances" value="Seafood").checkbox
+                        label(for="Seafood") Seafood
+            .ingredients 
+                label(for="ingredients").label What's there in your pantry?
+                textarea(id="ingredients", name="ingredients", cols="30", rows="5", placeholder=" Type in a comma separated list of the ingredients you want to use")
+            .find-recipe-btn.generate
+                button(type="submit") Find Recipe

@@ -1,0 +1,8 @@
+extends common/layout2
+block layout-content
+    .glass.norecipe
+        h1 Oops! Looks like there's no recipes based on your search.
+        p Try searching for another recipe
+        form(action="/FindRecipes") 
+            .find-recipe-btn
+                button(type="submit") Find Recipes

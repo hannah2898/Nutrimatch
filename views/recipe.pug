@@ -1,0 +1,29 @@
+extends common/layout3
+block layout-content
+    .page-layout
+        .image-layout 
+            .image-unsplash 
+                .layer
+                    //- picking the first image from the image json
+                    img(src=`${images[0].urls.regular}`, alt="Image")
+            h2.recipetitle #{recipe.title}
+            p.prep Prep-time : #{recipe.readyInMinutes} mins
+        .content-layout
+            .nutrition-block
+                .nutrition-content
+                    h3.nutrition-heading Nutritional Value
+                    //- displaying the nutritional facts of the selected recipe
+                    each nutrient in recipe.nutrition.nutrients
+                        if nutrient.name==='Calories'||nutrient.name==='Fat'||nutrient.name==='Carbohydrates'||nutrient.name==='Sugar'||nutrient.name==='Cholesterol'||nutrient.name==='Protein'
+                            p #{nutrient.name}: #{nutrient.amount}#{nutrient.unit}
+            .ingredients-section
+                .ingredient-header
+                    h3.ingredient-heading Ingredients
+                    h4.serves Serves: #{recipe.servings}
+                .list-section
+                    ul.ingredients-list#ingredients-list-container
+                        each ingredient in recipe.nutrition.ingredients
+                            li.ingredient #{ingredient.name}: #{ingredient.amount} #{ingredient.unit}
+                    a(href=`${recipe.sourceUrl}`) 
+                        .find-recipe-btn.recipebtn
+                            button(type="submit") Make it now

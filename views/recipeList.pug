@@ -1,0 +1,13 @@
+extends common/layout2
+block layout-content
+    .glass.result-block
+        h1.result-heading Here are your results!
+        .result
+            each recipe,index in recipes
+                a(href=`/selectedrecipe/${recipe.id}`).recipe-link
+                    .recipe-block
+                        img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
+                        .recipe-content
+                            p.recipe-title #{recipe.title}
+                            a(href="#")
+                                img(src="/Images/Vector.svg", alt="heart",width="20px").like
