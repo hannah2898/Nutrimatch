@@ -1317,6 +1317,8 @@ ul {
     }
     .form-block,.result-block,.norecipe {
         position: static;
+        margin-top: 40px;
+        padding-left: 5px;
         width: 40vh;
         animation: slideInFromBottom 1.2s ease-in-out;
     }
@@ -1341,11 +1343,18 @@ ul {
         font-size: 10px;
     }
     .dropdown select.select-option {
-        padding:0px;
+        padding:3px;
+        margin: 0px;
         font-size: 10px;
       }
     .dropdown select.select-option option {
-    font-size: 10px;
+        height: 150px;
+        overflow: hidden;
+        overflow-x: scroll;
+        padding: 3px;
+        margin: 0px;
+        min-height: 0.5em;
+        font-size: 10px;
     }
     select{
         padding: 0px;
@@ -1510,7 +1519,7 @@ ul {
         flex-direction: column;
         gap: 10px;
         margin: 20px;
-        justify-content: space-between;
+        justify-content:flex-start;
     }
     .account-settings{
         display: flex;
@@ -1551,7 +1560,6 @@ ul {
         justify-content: flex-start;
     }
     .options {
-     
         grid-template-columns: repeat(2, 1fr);
         grid-gap: 0px; 
         padding-top: 10px;
@@ -1570,9 +1578,13 @@ ul {
     }
     .scroll-arrow img{
         width: 25px;
-    }
+    }  
     .categories-container{
         width: 320px;
+        align-items: center;
+    }
+    .categories{
+        gap: 5px;
     }
     .grocery-block{
         width: 100px;
@@ -1586,7 +1598,8 @@ ul {
     .item-container {
         overflow: hidden;
         overflow-y: scroll;
-        max-height: 300px;
+        max-height: 500px;
+        padding-top: 10px;
         min-height: max-content;
     }
     .remove{
@@ -1625,10 +1638,16 @@ ul {
     }
     .name,.password{
         margin-top: 0px;
-    
+       
+    }
+    .name label{
+        margin-top: 15px;
     }
     .login-btn button{
         font-size: 10px;
+        padding: 5px;
+    }
+    #choose-avatar-btn{
         padding: 5px;
     }
 }

@@ -458,7 +458,7 @@ app.get("/Recipes", (request, response) => {
     const user = request.session.user || { likedRecipes: [] };
     let showList = request.session.showList || { results: [] };
     let showEdamamList = request.session.showEdamamList || { hits: [] }; 
-    response.render("recipeList", { title: "Recipe List", recipes: showList.results, edamamRecipes: showEdamamList.hits,user });
+    response.render("recipeList", { title: "Recipe List", recipes: showList.results, edamamRecipes: showEdamamList.hits });
 });
 app.post('/likeRecipe', async (req, res) => {
     if (!req.session.user) {

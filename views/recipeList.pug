@@ -5,7 +5,7 @@ block layout-content
         h1.result-heading Here are your results!
         .result
             each recipe, index in recipes
-                - const isLiked = user.likedRecipes && user.likedRecipes.includes(recipe.id)
+                - const isLiked =user && user.likedRecipes && user.likedRecipes.includes(recipe.id)
                 a(href=`/selectedrecipe/${recipe.id}`).recipe-link
                     .recipe-block
                         img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
@@ -16,7 +16,7 @@ block layout-content
             each hit in edamamRecipes
                 - const recipe = hit.recipe
                 - const recipeId = recipe.uri.split('#recipe_')[1]
-                - const isLikedEdamam = user.likedRecipes && user.likedRecipes.includes(recipeId)
+                - const isLikedEdamam = user && user.likedRecipes && user.likedRecipes.includes(recipeId)
                 a(href=`/selectedrecipe/${recipeId}`).recipe-link
                     .recipe-block
                         img(src=`${recipe.image}`, alt="recipe image", width="160px").recipe-image

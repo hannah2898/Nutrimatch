@@ -30,8 +30,12 @@ block layout-content
                 if recipe.recipe.totalTime > 0
                     .element
                         .element-1
-                            p.text #{recipe.recipe.totalTime}
-                            .unit MINS 
+                            if recipe.recipe.totalTime > 60
+                                p.text #{Math.floor(recipe.recipe.totalTime / 60)} 
+                                .unit HOUR
+                            else
+                                p.text #{recipe.recipe.totalTime}
+                                .unit MINS
                 .element
                     .element-1
                         p.text #{recipe.recipe.yield}
