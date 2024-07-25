@@ -11,16 +11,16 @@ html
             script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js")
             script(src="/js/common.js")
             
-    body
-        .background0.main-container
-            header#header.site-header 
-            main#main 
-                block layout-content
-            footer#footer 
-                p &copy; Copyright nutricuisine, 2024.
-        .avatar-popup#avatar-popup(style="display: none;")
-            p Select an avatar that suits you best!
-            each avatar in avatars
-                img(src=`../avatar/${avatar}`, alt="Avatar", class="avatar-option", data-filename=avatar).avatar-option
-            .button-container
-                button.select Select
+    body.background0.main-container 
+        header#header.site-header 
+        main#main 
+            block layout-content
+            .avatar-popup#avatar-popup(style="display: none;")
+                p Select an avatar that suits you best!
+                each avatar in avatars
+                    img(src=`../avatar/${avatar}`, alt="Avatar", class="avatar-option", data-filename=avatar).avatar-option
+                .button-container
+                    button.select Select
+        footer#footer 
+            p &copy; Copyright nutricuisine, 2024.
+    
