@@ -1,5 +1,5 @@
 const unsplash = "https://api.unsplash.com/";
-const unsplash_CLIENT_ID = process.env.UNSPLASH_CLIENT_ID;
+const unsplash_CLIENT_ID = process.env.unsplash_CLIENT_ID;
 const images = []; // Array to store images for each recipe
 
 // Function to get images from Unsplash API by using the recipe title
