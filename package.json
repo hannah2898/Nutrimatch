@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Assignment using 2 APIs",
   "main": "index.js",
-  "engines":{
-    "node": "14.x"
-  },
+  
   "scripts": {
     "start": "node ./index.js"
   },
