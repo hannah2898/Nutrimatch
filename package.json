@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Assignment using 2 APIs",
   "main": "index.js",
-  
   "scripts": {
     "start": "node ./index.js"
   },
@@ -11,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
     "db": "^6.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",

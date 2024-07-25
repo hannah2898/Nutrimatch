@@ -7,6 +7,7 @@ const config = require("./config");  // Import config.js
 const spoonacular = require("./modules/spoonacular/api");
 const edamam = require("./modules/edamam/api");
 const unsplash = require("./modules/unsplash/api");
+const MongoStore = require('connect-mongo');
 dotenv.config();
 console.log("SPOONACULAR_API_KEY:", config.SPOONACULAR_API_KEY);
 const { ObjectId } = require("mongodb");
@@ -30,6 +31,7 @@ app.use(session({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: dbUrl }),
     cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
 
