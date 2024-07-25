@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "description": "Assignment using 2 APIs",
   "main": "index.js",
-<<<<<<< HEAD
   
-=======
->>>>>>> 2ac6adae19f839ceb2bafca67a8ed96015e2e295
   "scripts": {
     "start": "node ./index.js"
   },
