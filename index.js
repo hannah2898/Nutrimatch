@@ -101,6 +101,7 @@ app.post("/login/submit", async (request, response) => {
 
         // Store user info in session
         request.session.user = user; // Store the entire user object in session
+        console.log("request.session.user",request.session.user);
         response.redirect(`/home`);
     } catch (error) {
         console.error("Error logging in: ", error);
