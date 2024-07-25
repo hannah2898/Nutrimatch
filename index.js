@@ -29,8 +29,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
+
 // Middleware to check if user is logged in
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
