@@ -436,7 +436,7 @@ async function connection() {
 }
 
 app.get("/home", async (request, response) => {
-    console.log('Session:', req.session);
+    console.log('Session:', request.session);
     response.render("index", { title: "nutrimatch.", animate: true });
 });
 
