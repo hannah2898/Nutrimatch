@@ -8,13 +8,13 @@ const spoonacular = require("./modules/spoonacular/api");
 const edamam = require("./modules/edamam/api");
 const unsplash = require("./modules/unsplash/api");
 const MongoStore = require('connect-mongo');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');  // For password hashing
+const { MongoClient, ObjectId } = require('mongodb'); 
 dotenv.config();
-console.log("SPOONACULAR_API_KEY:", config.SPOONACULAR_API_KEY);
-const { ObjectId } = require("mongodb");
-const{MongoClient} = require("mongodb");//import MongoCient for mongodb
+
 const dbPassword = process.env.Mongo_Password;
-const dbUrl = `mongodb+srv://Admin:${dbPassword}@nutrimatch.ct3pcam.mongodb.net/`;
-console.log("dbUrl"+dbUrl);
+const dbUrl = `mongodb+srv://Admin:${dbPassword}@nutrimatch.ct3pcam.mongodb.net/Nutrimatch`;
 const client = new MongoClient(dbUrl);
 
 const app = express();
@@ -26,13 +26,31 @@ const sessionSecret = 'aS3cur3S3cr3tK3y!@#123';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('Connected to MongoDB');
+});
+
 // Setup for express-session
 app.use(session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: dbUrl }),
-    cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 } // 1 day
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: dbUrl,
+        collectionName: 'sessions',
+        ttl: 14 * 24 * 60 * 60 // 14 days
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
+    }
 }));
 
 // Middleware to check if user is logged in
@@ -40,6 +58,7 @@ app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
 });
+
 // SET UP TEMPLATE ENGINES (PUG)
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -92,8 +111,7 @@ const avatars = ['boy1.jpeg', 'girl1.jpeg', 'boy2.jpeg', 'girl2.jpeg', 'boy3.jpe
 app.get("/signup",async(request,response)=>{
     response.render ("signup", { title: "Sign up to nutrimatch", animate: true,avatars: avatars })
 })
-// Import necessary modules
-const bcrypt = require('bcrypt');  // For password hashing
+
 
 // Sign-Up Route
 app.post("/signup/submit", async (request, response) => {
