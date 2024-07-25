@@ -12,18 +12,18 @@ NutriMatch is a website designed to help users find recipes based on the ingredi
 ## Technologies Used
 
 - **Frontend**:
-- Pug
-- CSS3
-- JavaScript (ES6+)
+ Pug
+ CSS3
+ JavaScript (ES6+)
 
 - **Backend**:
-- Node.js
-- Express.js
+   Node.js
+   Express.js
 
 
 - **APIs**:
-- Spoonacular
-- Unsplash
+   Spoonacular
+ Unsplash
 
 ## Instruction
 - Once you have cloned the project, add the .env files and run the website on your local server
