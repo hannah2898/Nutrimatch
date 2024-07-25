@@ -1,0 +1,144 @@
+extends common/layout5
+block layout-content
+    .profile
+        h3.profile-heading
+            span Hello
+            span.firstname #{firstName}!
+        .account-settings
+            h4.profile-page Account Settings
+            form(action="/profile/update", method="POST", id="profile-form").profile-form
+                input(type="hidden", name="_id", value=`${user._id}`)
+                .profile-lhs
+                    .name
+                        label(for="name").label Full Name
+                        input(type="text", id="name", name="name", value=`${user.name || ''}`, required).input-profile.input-name
+                    .name
+                        label(for="email").label Email
+                        input(type="email", id="email", name="email", value=`${user.email || ''}`, required).input-profile.input-email
+                    .allergies
+                        input(type="hidden", name="intolerances", value="")
+                        label(for="intolerances").label Your Allergies
+                        .options
+                            .row
+                                input(type="checkbox" id="Diary" name="intolerances" value="Diary" checked=(user.intolerances && user.intolerances.includes('Diary'))).checkbox
+                                label(for="Diary") Diary
+                                input(type="checkbox" id="Peanut" name="intolerances" value="Peanut" checked=(user.intolerances && user.intolerances.includes('Peanut'))).checkbox
+                                label(for="Peanut") Peanut
+                                input(type="checkbox" id="Gluten" name="intolerances" value="Gluten" checked=(user.intolerances && user.intolerances.includes('Gluten'))).checkbox
+                                label(for="Gluten") Gluten 
+                            .row
+                                input(type="checkbox" id="Soy" name="intolerances" value="Soy" checked=(user.intolerances && user.intolerances.includes('Soy'))).checkbox
+                                label(for="Soy") Soy
+                                input(type="checkbox" id="Sulfite" name="intolerances" value="Sulfite" checked=(user.intolerances && user.intolerances.includes('Sulfite'))).checkbox
+                                label(for="Sulfite") Sulfite
+                                input(type="checkbox" id="Shellfish" name="intolerances" value="Shellfish" checked=(user.intolerances && user.intolerances.includes('Shellfish'))).checkbox
+                                label(for="Shellfish") Shellfish
+                            .row
+                                input(type="checkbox" id="Egg" name="intolerances" value="Egg" checked=(user.intolerances && user.intolerances.includes('Egg'))).checkbox
+                                label(for="Egg") Egg
+                                input(type="checkbox" id="Sesame" name="intolerances" value="Sesame" checked=(user.intolerances && user.intolerances.includes('Sesame'))).checkbox
+                                label(for="Sesame") Sesame
+                                input(type="checkbox" id="Tree Nut" name="intolerances" value="Tree Nut" checked=(user.intolerances && user.intolerances.includes('Tree Nut'))).checkbox
+                                label(for="Tree Nut") Tree Nut
+                            .row
+                                input(type="checkbox" id="Grain" name="intolerances" value="Grain" checked=(user.intolerances && user.intolerances.includes('Grain'))).checkbox
+                                label(for="Grain") Grain
+                                input(type="checkbox" id="Wheat" name="intolerances" value="Wheat" checked=(user.intolerances && user.intolerances.includes('Wheat'))).checkbox
+                                label(for="Wheat") Wheat
+                                input(type="checkbox" id="Seafood" name="intolerances" value="Seafood" checked=(user.intolerances && user.intolerances.includes('Seafood'))).checkbox
+                                label(for="Seafood") Seafood
+                    .custom-diet
+                        .diet
+                            label(for="diet").label Set Your Dietary Preferences
+                        .dropdown
+                            select(name="diet", id="diet").select-option
+                                option(value="" selected=!user || !user.diet) Select One
+                                option(value="Gluten Free", selected=user && user.diet === "Gluten Free") Gluten Free
+                                option(value="Ketogenic", selected=user && user.diet === "Ketogenic") Ketogenic
+                                option(value="Vegetarian", selected=user && user.diet === "Vegetarian") Vegetarian
+                                option(value="Lacto-Vegetarian", selected=user && user.diet === "Lacto-Vegetarian") Lacto-Vegetarian
+                                option(value="Ovo-Vegetarian", selected=user && user.diet === "Ovo-Vegetarian") Ovo-Vegetarian
+                                option(value="Vegan", selected=user && user.diet === "Vegan") Vegan
+                                option(value="Pescetarian", selected=user && user.diet === "Pescetarian") Pescetarian
+                                option(value="Paleo", selected=user && user.diet === "Paleo") Paleo
+                                option(value="Primal", selected=user && user.diet === "Primal") Primal
+                                option(value="Low FODMAP", selected=user && user.diet === "Low FODMAP") Low FODMAP
+                                option(value="Whole30", selected=user && user.diet === "Whole30") Whole30
+                    .changePassword
+                        a(href="#", id="change-password-link") Change Password
+                .profile-rhs 
+                    img(src=user ? `/avatar/${user.avatar || ''}` : "", alt="avatar").avatar
+                    .avatar-select
+                        button(type="button", id="choose-avatar-btn") Choose Avatar
+                        input(type="hidden", id="avatar", name="avatar", value=`${user.avatar || ''}`)
+                    //- .login-btn.update
+                    //-     button(type="submit") Update
+            .logout 
+                a(href="/logout") Logout
+    script.
+        document.getElementById('choose-avatar-btn').addEventListener('click', function() {
+            document.getElementById('avatar-popup').style.display = 'block';
+            // Blur the background
+            document.querySelector('.main-container').classList.add('blur-background');
+        });
+
+        document.addEventListener('click', function(event) {
+            var avatarPopup = document.getElementById('avatar-popup');
+            var avatarSelect = document.getElementById('avatar');
+            var chosenAvatarImg = document.getElementById('chosen-avatar');
+            var avatarImg = document.querySelector('.avatar');
+            var mainContainer = document.querySelector('.main-container');
+
+            // Close avatar popup if clicked outside of it
+            if (!avatarPopup.contains(event.target) && event.target !== document.getElementById('choose-avatar-btn') && !event.target.classList.contains('select')) {
+                avatarPopup.style.display = 'none';
+                mainContainer.classList.remove('blur-background');
+            }
+
+            // Handle avatar selection
+            if (event.target.classList.contains('avatar-option')) {
+                // Remove border from previously selected avatar
+                var selectedAvatar = document.querySelector('.avatar-option.selected');
+                if (selectedAvatar) {
+                    selectedAvatar.classList.remove('selected');
+                }
+
+                // Add border to the clicked avatar
+                event.target.classList.add('selected');
+
+                // Update chosen avatar and hidden input value
+                var selectedFilename = event.target.getAttribute('data-filename');
+                console.log("selectedFilename" + selectedFilename);
+                avatarImg.src = `../avatar/${selectedFilename}`; // Change src attribute
+                avatarSelect.value = selectedFilename;
+
+                // Automatically submit the form
+                document.getElementById('profile-form').submit();
+            }
+
+            // Handle "Select" button click
+            if (event.target.classList.contains('select')) {
+                // Prevent form submission
+                event.preventDefault();
+
+                // Ensure a selection is made before closing
+                var selectedFilename = avatarSelect.value;
+                console.log("avatarSelect.value" + avatarSelect.value);
+                if (selectedFilename) {
+                    avatarPopup.style.display = 'none';
+                    mainContainer.classList.remove('blur-background');
+
+                    // Automatically submit the form
+                    document.getElementById('profile-form').submit();
+                } else {
+                    alert('Please select an avatar.');
+                }
+            }
+        });
+
+        // Automatically submit the form on changes
+        document.querySelectorAll('.input-profile, .checkbox, .select-option').forEach(function(element) {
+            element.addEventListener('change', function() {
+                document.getElementById('profile-form').submit();
+            });
+        });

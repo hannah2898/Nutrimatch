@@ -1,8 +1,51 @@
 .vertical-nav
     .logo 
-        a(href="/") nutrimatch.
+        a(href="/home") nutrimatch.
     .nav-menu
-        a(href="/") Home
-        a(href="/about") About us
+        a(href="/home") Home
         a(href="/FindRecipes") Recipes
-        
+        a(href="/about") About us
+        if user && Object.keys(user).length > 0
+            a(href='/profile') Profile
+            a(href="/likedRecipes") Liked Recipes
+        else
+            a(href="/") Login
+//- Hamburger Icon
+.mobile-header
+    .logo
+        a(href="/home") nutrimatch.
+    div.hamburger-menu(onclick="toggleNav()")
+        div.bar
+        div.bar
+        div.bar
+
+//- Mobile Navigation Menu
+div.mobile-nav
+    div.mobile-nav-menu
+        a(href="/home") Home
+        a(href="/FindRecipes") Recipes
+        a(href="/about") About us
+        //- Conditional Links Based on User
+        a(href="/profile", class="user-link", style="display: none;") Profile
+        a(href="/likedRecipes", class="user-link", style="display: none;") Liked Recipes
+        a(href="/" , class="login-link", style="display: none;") Login
+script.
+    const user = !{JSON.stringify(user)};
+     function toggleNav() {
+        const mobileNav = document.querySelector('.mobile-nav');
+        const hamburger= document.querySelector('.hamburger-menu');
+        mobileNav.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        // Get user links and login link elements
+        const userLinks = document.querySelectorAll('.user-link');
+        const loginLink = document.querySelector('.login-link');
+        if (user) {
+            // Show user-related links and hide login link if user is defined
+            userLinks.forEach(link => link.style.display = 'block');
+            loginLink.style.display = 'none';
+        } else {
+            // Show login link and hide user-related links if user is not defined
+            userLinks.forEach(link => link.style.display = 'none');
+            loginLink.style.display = 'block';
+        }
+    }

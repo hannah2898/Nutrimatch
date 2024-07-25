@@ -1,0 +1,31 @@
+extends common/loginLayout
+block layout-content
+    .login-form.glass 
+        .header-content 
+                include common/nav3.pug
+        .form-container 
+            h3.login-header Login
+            form(action="/login/submit", method="POST").login-cred.login-cred
+                .name
+                    label(for="email").label Email
+                    input(type="email",id="email",name="email",required).input.input-email
+                .password
+                    label(for="password").label Password
+                    input(type="password",id="password",name="password",required).input.input-password
+                    .show-password
+                        input(type="checkbox", id="show-password").checkbox
+                        label(for="show-password") Show Password
+                .login-btn
+                    button(type="submit") Login
+        .prompt
+            p Don't have an account? 
+                a(href="/signup").signup Signup 
+    script.
+        document.getElementById('show-password').addEventListener('change', function() {
+            var passwordInput = document.getElementById('password');
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });

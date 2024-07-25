@@ -1,0 +1,145 @@
+doctype html 
+html    
+    head 
+        meta(charset ="utf-8")
+        title #{title}
+        link(rel="icon" href="Images/nutrimatch_icon.png" type="image/png")
+        link(rel="stylesheet", type="text/css",href="/css/styles.css") 
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet",href="https://unpkg.com/swiper/swiper-bundle.min.css")
+        script(src="https://cdn.jsdelivr.net/npm/chart.js")
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css")
+        block scripts 
+            script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js")
+            script(src="../js/common.js")
+            
+    body.profile-pody
+        .main-container
+            .main-sub        
+                main#main-profile 
+                    .header-content 
+                        .vertical-nav2
+                            .logo 
+                                a(href="/home") nutrimatch.
+                            .nav-menu
+                                img(src=user ? `/avatar/${user.avatar}` : "", alt="avatar").avatar-profile
+                                a(href="/home") Home
+                                a(href='/profile') Profile
+                                a(href="/FindRecipes") Recipes
+                                a(href="/likedRecipes") Liked Recipes
+                                a(href="/groceryList") Grocery List
+                        .mobile-header
+                            .logo
+                                a(href="/home") nutrimatch.
+                            div.hamburger-menu(onclick="toggleNav()")
+                                div.bar
+                                div.bar
+                                div.bar
+
+                        //- Mobile Navigation Menu
+                        div.mobile-nav
+                            div.mobile-nav-menu
+                                a(href="/home") Home
+                                a(href="/FindRecipes") Recipes
+                                //- Conditional Links Based on User
+                                a(href="/profile", class="user-link", style="display: none;") Profile
+                                a(href="/likedRecipes", class="user-link", style="display: none;") Liked Recipes
+                                a(href="/groceryList") Grocery List
+                                a(href="/" , class="login-link", style="display: none;") Login
+                    block layout-content
+        .avatar-popup#avatar-popup(style="display: none;")
+            p Select an avatar that suits you best!
+            each avatar in avatars
+                img(src=`../avatar/${avatar}`, alt="Avatar", class="avatar-option", data-filename=avatar).avatar-option
+            .button-container
+                button.select Select
+        .popup.password-popup#change-password-popup(style="display: none;")
+            .popup-content
+                h3 Change Password
+                form(action="/profile/change-password", method="POST").change-password-form
+                    input(type="hidden", name="userId", value=`${user._id}`)
+                    .form-group
+                        label(for="oldPassword") Old Password
+                        input(type="password", id="oldPassword", name="oldPassword", required)
+                        .show-password1
+                            input(type="checkbox", id="show-old-password").checkbox
+                            label(for="show-old-password") Show
+                    .form-group
+                        label(for="newPassword") New Password
+                        input(type="password", id="newPassword", name="newPassword", required)
+                        .show-password1
+                            input(type="checkbox", id="show-new-password").checkbox
+                            label(for="show-new-password") Show
+                    .form-group
+                        label(for="confirmPassword") Confirm New Password
+                        input(type="password", id="confirmPassword", name="confirmPassword", required)
+                        .show-password1
+                            input(type="checkbox", id="show-confirm-password").checkbox
+                            label(for="show-confirm-password") Show
+                    .button-group
+                        button(type="submit") Submit
+                        button(type="button", id="cancel-change-password") Cancel
+    footer#footer 
+        p &copy; Copyright nutricuisine, 2024.
+        
+        script.
+             // Change Password Functionality
+            document.getElementById('change-password-link').addEventListener('click', function(event) {
+                event.preventDefault();
+                document.getElementById('change-password-popup').style.display = 'block';
+                document.querySelector('.main-sub').classList.add('blur-background');
+                
+            });
+
+            document.getElementById('cancel-change-password').addEventListener('click', function() {
+                document.getElementById('change-password-popup').style.display = 'none';
+                document.querySelector('.main-sub').classList.remove('blur-background');
+            });
+            // Password visibility toggle
+            document.getElementById('show-old-password').addEventListener('change', function() {
+                var passwordInput = document.getElementById('oldPassword');
+                if (this.checked) {
+                    passwordInput.type = 'text';
+                } else {
+                    passwordInput.type = 'password';
+                }
+            });
+
+            document.getElementById('show-new-password').addEventListener('change', function() {
+                var passwordInput = document.getElementById('newPassword');
+                if (this.checked) {
+                    passwordInput.type = 'text';
+                } else {
+                    passwordInput.type = 'password';
+                }
+            });
+
+            document.getElementById('show-confirm-password').addEventListener('change', function() {
+                var passwordInput = document.getElementById('confirmPassword');
+                if (this.checked) {
+                    passwordInput.type = 'text';
+                } else {
+                    passwordInput.type = 'password';
+                }
+            });
+        
+            const user = !{JSON.stringify(user)};
+            function toggleNav() {
+                const mobileNav = document.querySelector('.mobile-nav');
+                const hamburger= document.querySelector('.hamburger-menu');
+                mobileNav.classList.toggle('active');
+                hamburger.classList.toggle('active');
+                // Get user links and login link elements
+                const userLinks = document.querySelectorAll('.user-link');
+                const loginLink = document.querySelector('.login-link');
+                if (user) {
+                    // Show user-related links and hide login link if user is defined
+                    userLinks.forEach(link => link.style.display = 'block');
+                    loginLink.style.display = 'none';
+                } else {
+                    // Show login link and hide user-related links if user is not defined
+                    userLinks.forEach(link => link.style.display = 'none');
+                    loginLink.style.display = 'block';
+                }
+            }
+            

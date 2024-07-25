@@ -1,0 +1,204 @@
+extends common/layout6
+
+block layout-content
+    .profile
+        h3.profile-heading
+            span Hello
+            span.firstname #{firstName}!
+        .grocery-list
+            p Here are your
+            h4.sub-header Grocery List
+            .category-section
+                h3 Category
+                .categories-container
+                    .scroll-arrow
+                        img(src="/Images/previous.png", alt="Scroll Left Arrow", id="scrollLeftArrow")
+                    .categories
+                        .category
+                            a(href="#" data-category="All") All
+                        .category
+                            a(href="#" data-category="Dairy") Dairy
+                        .category
+                            a(href="#" data-category="Beverages") Beverages
+                        .category
+                            a(href="#" data-category="Produce") Produce
+                        .category
+                            a(href="#" data-category="Meat") Meat
+                        .category
+                            a(href="#" data-category="Grains") Grains
+                        .category
+                            a(href="#" data-category="Snacks") Snacks
+                        .category
+                            a(href="#" data-category="Spices & Condiments") Spices & Condiments
+                        .category
+                            a(href="#" data-category="Canned Food") Canned Food
+                        .category
+                            a(href="#" data-category="Oil") Oil
+                        .category
+                            a(href="#" data-category="Other") Other
+                    .scroll-arrow
+                        img(src="/Images/next.png", alt="Scroll Right Arrow", id="scrollRightArrow")
+            .items-section 
+                h3 Items
+                .item-container 
+                     each item in groceryItems
+                        - const itemId = item.id ? item.id : item.foodId;
+                        .grocery-block(data-id=itemId, data-aisle=item.aisle, data-foodCategory=item.foodCategory, data-name=item.nameClean)
+                            if item.image && item.image.includes("https")
+                                img(src=`${item.image}`, alt="item image", width="100px").item-image
+                                .ingredient-content
+                                    .ingredient-name
+                                        p.ingredient-title #{item.food}
+                                        p.ingredient-amount #{(item.weight.toFixed(2))} g
+                                    a(href="#" id=`like-${item.foodId}` onclick=`toggleItem('${item.foodId}'); return false;`).removeItem
+                                        img(src="/Images/add.png", alt="add", width="30px").remove
+                            else 
+                                img(src=`https://img.spoonacular.com/ingredients_100x100/${item.image}`, alt="item image", width="100px").item-image
+                                .ingredient-content
+                                    .ingredient-name
+                                        p.ingredient-title #{item.nameClean}
+                                        p.ingredient-amount #{item.amount} #{item.unit}
+                                    a(href="#" id=`like-${item.id}` onclick=`toggleItem('${item.id}'); return false;`).removeItem
+                                        img(src="/Images/add.png", alt="add", width="30px").remove
+
+    script.
+        function toggleItem(itemId) {
+            console.log("Toggling item with ID:", itemId);
+            
+            const itemBlock = document.querySelector(`.grocery-block[data-id="${itemId}"]`);
+            const removeItemLink = itemBlock ? itemBlock.querySelector('.removeItem img') : null;
+            
+            if (removeItemLink) {
+                if (removeItemLink.src.includes('add.png')) {
+                    // Mark item as added
+                    removeItemLink.src = "/Images/added.png";
+                    
+                    // Remove the ingredient from the database
+                    fetch('/removeIngredient', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ ingredient: { id: String(itemId) } }) // Ensure id is sent as a string
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Response data:', data);
+                        if (!data.message) {
+                            console.log("No confirmation message received.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    // Mark item as add
+                    removeItemLink.src = "/Images/add.png";
+                    
+                    // No database update needed
+                }
+            } else {
+                console.log("Remove item link not found.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoriesContainer = document.querySelector('.categories');
+            const scrollRightArrow = document.getElementById('scrollRightArrow');
+            const scrollLeftArrow = document.getElementById('scrollLeftArrow');
+
+            scrollRightArrow.addEventListener('click', function() {
+                console.log('Clicked scroll arrow');
+                categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }); // Adjust scroll amount as needed
+            });
+            scrollLeftArrow.addEventListener('click', function() {
+                console.log('Clicked scroll arrow');
+                categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }); // Adjust scroll amount as needed
+            });
+            const categories = document.querySelectorAll('.category a');
+
+            categories.forEach(category => {
+                category.addEventListener('click', function(event) {
+                    // Prevent default link behavior
+                    event.preventDefault();
+
+                    // Get the selected category
+                    const selectedCategory = this.getAttribute('data-category');
+
+                    // Remove active class from all categories
+                    categories.forEach(cat => {
+                        cat.classList.remove('active-category');
+                    });
+
+                    // Add active class to the clicked category
+                    this.classList.add('active-category');
+
+                    // Filter items based on the selected category
+                    filterItems(selectedCategory);
+                });
+            });
+
+            function filterItems(category) {
+                const items = document.querySelectorAll('.grocery-block');
+                items.forEach(item => {
+                    let itemAisle = item.getAttribute('data-aisle') || '';
+                    let itemFoodCategory = item.getAttribute('data-foodCategory') || '';
+                    const foodName = item.getAttribute('data-name') || '';
+                    const ingredientTitle = item.querySelector('.ingredient-title') ? item.querySelector('.ingredient-title').textContent.trim() : '';
+                    console.log("ingredientTitle"+ingredientTitle);
+
+                    itemAisle = itemAisle.toLowerCase();
+                    const lowerCategory = category.toLowerCase();
+
+                    // Check if ingredient-title is present
+                    if (!ingredientTitle) {
+                        item.style.display = 'none';
+                        return;
+                    }
+
+                    // Special case: if the foodName contains "oil", set itemAisle to "Oil"
+                    if (foodName.toLowerCase().includes("oil")|| itemAisle.includes('oil')) {
+                        itemAisle = "Oil";
+                        itemFoodCategory = "Oil";
+                    }
+                    if (foodName.toLowerCase().includes("snack")|| itemAisle.includes('snack')) {
+                        itemAisle = "Snacks";
+                        itemFoodCategory = "Snacks";
+                    }
+                    
+                    if (itemAisle.includes('fruit') || itemAisle.includes('vegetable')|| 
+                            itemFoodCategory.toLowerCase().includes('fruit')|| itemFoodCategory.toLowerCase().includes('vegetable')) {
+                            itemFoodCategory = "Produce";
+                            itemAisle="Produce";
+                        } 
+                    if (itemAisle.includes('yogurt') || itemAisle.includes('milk')||itemAisle.includes('cheese')||itemAisle.includes('egg')||itemAisle.includes('cream')||
+                            itemFoodCategory.toLowerCase().includes('yogurt')|| itemFoodCategory.toLowerCase().includes('milk')|| itemFoodCategory.toLowerCase().includes('cheese')|| itemFoodCategory.toLowerCase().includes('egg')|| itemFoodCategory.toLowerCase().includes('cream')) {
+                            itemFoodCategory = "Dairy";
+                            itemAisle="Dairy";
+                        } 
+                    // Convert aisle and foodCategory to lowercase for comparison
+                    
+                    // Combine "Spices" and "Spices & Condiments" categories into one
+                    if (lowerCategory === 'spices & condiments') {
+                        if (itemAisle.includes('spices') || itemAisle.includes('seasonings')|| itemAisle.includes('condiments') || 
+                            itemFoodCategory.toLowerCase().includes('spices')|| itemFoodCategory.toLowerCase().includes('seasonings')|| itemFoodCategory.toLowerCase().includes('condiments')) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    } else {
+                        // General case for other categories
+                        if (category === 'All' || 
+                            itemAisle.includes(lowerCategory) || 
+                            itemFoodCategory.toLowerCase().includes(lowerCategory)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });

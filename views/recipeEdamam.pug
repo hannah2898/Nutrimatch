@@ -1,0 +1,185 @@
+extends common/layout4
+
+block layout-content
+    .page-layout
+        .image-layout 
+            .image-unsplash 
+                .layer
+                    - const imageSrc = (images && images.length > 0) ? images[0].urls.regular : '/Images/food.jpg'
+                    img(src=`${imageSrc}`, alt="Image")
+            h2.recipetitle #{recipe.recipe.label}
+            if recipe.recipe.totalTime > 0
+                p.prep 
+                    | Prep-time : 
+                    if recipe.recipe.totalTime > 60
+                        | #{Math.floor(recipe.recipe.totalTime / 60)} hr #{recipe.recipe.totalTime % 60} mins
+                    else
+                        | #{recipe.recipe.totalTime} mins
+        .content-layout
+            
+            - const isLiked = user && user.likedRecipes && user.likedRecipes.includes(id)
+            .mob-recipe
+                img(src=`${images[0].urls.regular}`, alt="Image").mob-image
+                h2.recipetitle-mob #{recipe.title}
+            h3.dishDesc Dish Description
+            .like-recipe
+                a(href="#" id=`like-${id}` onclick=`likeRecipe('${id}')`).liked 
+                    p Like this Recipe
+                    img(src="/Images/like.png", alt="heart", width="20px").like
+            .time-serve-cal
+                if recipe.recipe.totalTime > 0
+                    .element
+                        .element-1
+                            p.text #{recipe.recipe.totalTime}
+                            .unit MINS 
+                .element
+                    .element-1
+                        p.text #{recipe.recipe.yield}
+                        .unit SERVES 
+                .element
+                    .element-2
+                        p.text #{parseFloat(recipe.recipe.calories).toFixed(2)}
+                        .unit KCAL 
+            .summary-block 
+                - let maxNutrient = '';
+                - let maxQuantity = 0;
+                - let unit = '';
+                - for (let key in recipe.recipe.totalNutrients) {
+                    - let nutrient = recipe.recipe.totalNutrients[key];
+                    - if (nutrient.quantity > maxQuantity) {
+                        - maxQuantity = nutrient.quantity;
+                        - maxNutrient = nutrient.label;
+                        - unit = nutrient.unit;
+                    - }
+                - }
+                p The recipe<b> #{recipe.recipe.label}</b> is a great <b>#{recipe.recipe.dietLabels.join(', ')}</b> dish perfect for <b> #{recipe.recipe.mealType.join(', ')}</b>. This #{recipe.recipe.cuisineType.join('-')} dish is a burst of flavours, packed with nutrients, and can be served as a <b> #{recipe.recipe.dishType}</b>. This recipe is packed with <b>#{maxNutrient}</b> containing almost <b>#{maxQuantity.toFixed(2)}#{unit}</b> <br/>You should definitely give this recipe a try!
+    
+            .dishDetails 
+                .detailBtn 
+                    #ingredients Ingredients
+                    #nutrition Nutrition
+                .info-container 
+                    .ingredient-info
+                        h3.tab-heading Ingredients
+                        p.ingredient-desc Click on the ingredients to add to your cart
+                        ul.ingredient-list
+                            each ingredient in recipe.recipe.ingredients
+                                li.ingredient(data-name=`${ingredient.food}`, data-ingredient=`${JSON.stringify(ingredient)}`) #{ingredient.food} : #{ingredient.quantity} #{ingredient.measure}
+                    .nutrient-info 
+                        h3.tab-heading Nutritional Value
+                        each nutrient in nutrients
+                            if nutrient.label==='Energy'||nutrient.label==='Fat'||nutrient.label==='Carbs'||nutrient.label==='Sugars'||nutrient.label==='Cholesterol'||nutrient.label==='Protein'
+                                p.nutrient-val #{nutrient.label}: #{parseFloat(nutrient.quantity).toFixed(2)}#{nutrient.unit}
+                a(href=`${recipe.recipe.url}`, target='_blank') 
+                    .find-recipe-btn.recipebtn
+                        button(type="submit") Make it now
+
+    script.
+        function likeRecipe(recipeId) {
+                const likeButton = document.getElementById(`like-${recipeId}`);
+                const likeImage = likeButton.querySelector('img');
+                const isLiked = likeImage.src.includes('liked.svg');
+
+                fetch('/likeRecipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ recipeId, action: isLiked ? 'unlike' : 'like' })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Recipe like/unlike response:', data);
+                    likeImage.src = isLiked ? "/Images/like.png" : "/Images/liked.svg";
+                })
+                .catch(error => {
+                    alert("Login to your account to like recipes");
+                });
+            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const ingredientItems = document.querySelectorAll('.ingredient');
+            
+            ingredientItems.forEach(item => {
+                item.addEventListener('click', function(event) {
+                    const ingredientName = item.getAttribute('data-name');
+                    const recipeId = '#{id}'; // Assuming recipe ID is available
+                    const ingredient = JSON.parse(item.getAttribute('data-ingredient'));
+                    
+                    if (item.classList.contains('added')) {
+                        removeFromDatabase(ingredient, recipeId);
+                        showNotification(event.clientX, event.clientY, `${ingredientName} removed from the list.`);
+                        item.classList.remove('added');
+                    } else {
+                        addToDatabase(ingredient, recipeId);
+                        showNotification(event.clientX, event.clientY, `${ingredientName} added to the list.`);
+                        item.classList.add('added');
+                    }
+                });
+            });
+        });
+
+        function addToDatabase(ingredient, recipeId) {
+            fetch('/addIngredient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ingredient, recipeId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Ingredient added:', data);
+            })
+            .catch(error => {
+                console.error('Error adding ingredient:', error);
+            });
+        }
+
+        function removeFromDatabase(ingredient, recipeId) {
+            fetch('/removeIngredient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ingredient, recipeId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Ingredient removed:', data);
+            })
+            .catch(error => {
+                console.error('Error removing ingredient:', error);
+            });
+        }
+
+        function showNotification(x, y, message) {
+            const notification = document.createElement('div');
+            notification.classList.add('notification');
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            notification.style.top = `${y}px`;
+            notification.style.left = `${x + 20}px`;
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 1000);
+            }, 2000);
+        }

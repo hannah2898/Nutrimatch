@@ -8,7 +8,7 @@ block layout-content
                 .cuisine-label
                     label(for="cuisine").label Cuisine 
                 .dropdown
-                    select(name="cuisine" id="cuisine" value ="Select One").select
+                    select(name="cuisine" id="cuisine" value ="Select One").select-option
                         option(value="" selected) Select One
                         option(value="African") African
                         option(value="Asian") Asian
@@ -38,55 +38,124 @@ block layout-content
                         option(value="Thai") Thai
                         option(value="Vietnamese") Vietnamese
                 .diet
-                    label(for="diet").label Dietary Preferences
+                    label(for="diet").label Diet
                 .dropdown
-                    select(name="diet" id="diet" value ="Select One").select
-                        option(value="" selected) Select One
-                        option(value="Gluten Free") Gluten Free
-                        option(value="Ketogenic") Ketogenic
-                        option(value="Vegetarian") Vegetarian
-                        option(value="Lacto-Vegetarian") Lacto-Vegetarian
-                        option(value="Ovo-Vegetarian") Ovo-Vegetarian
-                        option(value="Vegan") Vegan
-                        option(value="Pescetarian") Pescetarian
-                        option(value="Paleo") Paleo
-                        option(value="Primal") Primal
-                        option(value="Low FODMAP") Low FODMAP
-                        option(value="Whole30") Whole30
+                    select(name="diet" id="diet").select-option
+                        option(value="" selected=!user || !user.diet) Select One
+                        option(value="Gluten Free", selected=user && user.diet === "Gluten Free") Gluten Free
+                        option(value="Ketogenic", selected=user && user.diet === "Ketogenic") Ketogenic
+                        option(value="Vegetarian", selected=user && user.diet === "Vegetarian") Vegetarian
+                        option(value="Lacto-Vegetarian", selected=user && user.diet === "Lacto-Vegetarian") Lacto-Vegetarian
+                        option(value="Ovo-Vegetarian", selected=user && user.diet === "Ovo-Vegetarian") Ovo-Vegetarian
+                        option(value="Vegan", selected=user && user.diet === "Vegan") Vegan
+                        option(value="Pescetarian", selected=user && user.diet === "Pescetarian") Pescetarian
+                        option(value="Paleo", selected=user && user.diet === "Paleo") Paleo
+                        option(value="Primal", selected=user && user.diet === "Primal") Primal
+                        option(value="Low FODMAP", selected=user && user.diet === "Low FODMAP") Low FODMAP
+                        option(value="Whole30", selected=user && user.diet === "Whole30") Whole30
             .allergies
                 input(type="hidden", name="intolerances",value="")
                 label(for="intolerances").label Allergies
                 .options
                     .row
-                        input(type="checkbox" id="Diary" name="intolerances" value="Diary").checkbox
+                        input(type="checkbox" id="Diary" name="intolerances" value="Diary" checked=(user && user.intolerances && user.intolerances.includes('Diary'))).checkbox
                         label(for="Diary") Diary
-                        input(type="checkbox" id="Peanut" name="intolerances" value="Peanut").checkbox
+                        input(type="checkbox" id="Peanut" name="intolerances" value="Peanut" checked=(user && user.intolerances && user.intolerances.includes('Peanut'))).checkbox
                         label(for="Peanut") Peanut
-                        input(type="checkbox" id="Gluten" name="intolerances" value="Gluten").checkbox
+                        input(type="checkbox" id="Gluten" name="intolerances" value="Gluten" checked=(user && user.intolerances && user.intolerances.includes('Gluten'))).checkbox
                         label(for="Gluten") Gluten 
                     .row
-                        input(type="checkbox" id="Soy" name="intolerances" value="Soy").checkbox
+                        input(type="checkbox" id="Soy" name="intolerances" value="Soy" checked=(user && user.intolerances && user.intolerances.includes('Soy'))).checkbox
                         label(for="Soy") Soy
-                        input(type="checkbox" id="Sulfite" name="intolerances" value="Sulfite").checkbox
+                        input(type="checkbox" id="Sulfite" name="intolerances" value="Sulfite" checked=(user && user.intolerances && user.intolerances.includes('Sulfite'))).checkbox
                         label(for="Sulfite") Sulfite
-                        input(type="checkbox" id="Shellfish" name="intolerances" value="Shellfish").checkbox
+                        input(type="checkbox" id="Shellfish" name="intolerances" value="Shellfish" checked=(user && user.intolerances && user.intolerances.includes('Shellfish'))).checkbox
                         label(for="Shellfish") Shellfish
                     .row
-                        input(type="checkbox" id="Egg" name="intolerances" value="Egg").checkbox
+                        input(type="checkbox" id="Egg" name="intolerances" value="Egg" checked=(user && user.intolerances && user.intolerances.includes('Egg'))).checkbox
                         label(for="Egg") Egg
-                        input(type="checkbox" id="Sesame" name="intolerances" value="Sesame").checkbox
+                        input(type="checkbox" id="Sesame" name="intolerances" value="Sesame" checked=(user && user.intolerances && user.intolerances.includes('Sesame'))).checkbox
                         label(for="Sesame") Sesame
-                        input(type="checkbox" id="Tree Nut" name="intolerances" value="Tree Nut").checkbox
+                        input(type="checkbox" id="Tree Nut" name="intolerances" value="Tree Nut" checked=(user && user.intolerances && user.intolerances.includes('Tree Nut'))).checkbox
                         label(for="Tree Nut") Tree Nut
                     .row
-                        input(type="checkbox" id="Grain" name="intolerances" value="Grain").checkbox
+                        input(type="checkbox" id="Grain" name="intolerances" value="Grain" checked=(user && user.intolerances && user.intolerances.includes('Grain'))).checkbox
                         label(for="Grain") Grain
-                        input(type="checkbox" id="Wheat" name="intolerances" value="Wheat").checkbox
+                        input(type="checkbox" id="Wheat" name="intolerances" value="Wheat" checked=(user && user.intolerances && user.intolerances.includes('Wheat'))).checkbox
                         label(for="Wheat") Wheat
-                        input(type="checkbox" id="Seafood" name="intolerances" value="Seafood").checkbox
+                        input(type="checkbox" id="Seafood" name="intolerances" value="Seafood" checked=(user && user.intolerances && user.intolerances.includes('Seafood'))).checkbox
                         label(for="Seafood") Seafood
-            .ingredients 
+            .ingredients
                 label(for="ingredients").label What's there in your pantry?
-                textarea(id="ingredients", name="ingredients", cols="30", rows="5", placeholder=" Type in a comma separated list of the ingredients you want to use")
+                textarea(id="ingredientList", name="ingredients", cols="30", rows="5", placeholder=" Type in a comma separated list of the ingredients you want to use")
+                .suggestions-container#suggestions-container(style="display: none; position: absolute; z-index: 1000;")
             .find-recipe-btn.generate
                 button(type="submit") Find Recipe
+    script.
+        const ingredients = [
+            "Tomato", "Rice", "Onion", "Garlic", "Chicken", "Salt", "Pepper", "Olive oil", "Basil", "Oregano",
+            "Carrot", "Bell pepper", "Potato", "Spinach", "Lettuce", "Cucumber", "Cheese", "Beef", "Pork", "Fish",
+            "Shrimp", "Butter", "Milk", "Egg", "Flour", "Sugar", "Bread", "Yogurt", "Lemon", "Lime",
+            "Orange", "Apple", "Banana", "Grapes", "Strawberry", "Blueberry", "Raspberry", "Pineapple", "Mango", "Peach",
+            "Zucchini", "Eggplant", "Mushroom", "Broccoli", "Cauliflower", "Celery", "Corn", "Beans", "Peas", "Chili",
+            "Parsley", "Thyme", "Rosemary", "Cilantro", "Mint", "Ginger", "Cinnamon", "Nutmeg", "Clove", "Cardamom",
+            "Turmeric", "Paprika", "Cumin", "Coriander", "Mustard", "Ketchup", "Mayonnaise", "Vinegar", "Soy sauce", "Worcestershire sauce",
+            "BBQ sauce", "Hot sauce", "Honey", "Maple syrup", "Brown sugar", "Powdered sugar", "Vanilla extract", "Almond extract", "Baking powder", "Baking soda",
+            "Yeast", "Coconut milk", "Almond milk", "Soy milk", "Tofu", "Tempeh", "Seitan", "Quinoa", "Couscous", "Polenta",
+            "Oats", "Granola", "Chia seeds", "Flax seeds", "Pumpkin seeds", "Sunflower seeds", "Walnuts", "Almonds", "Pecans", "Cashews",
+            "Peanut butter", "Almond butter", "Tahini", "Hummus", "Chickpeas", "Lentils", "Black beans", "Kidney beans", "Pinto beans", "Navy beans",
+            "Sour cream", "Cream cheese", "Ricotta", "Mozzarella", "Parmesan", "Feta", "Goat cheese", "Brie", "Gouda", "Swiss cheese",
+            "Bacon", "Ham", "Turkey", "Sausage", "Salami", "Prosciutto", "Duck", "Lamb", "Venison", "Quail",
+            "Tuna", "Salmon", "Trout", "Cod", "Halibut", "Mackerel", "Sardines", "Anchovies", "Scallops", "Crab",
+            "Lobster", "Clams", "Mussels", "Oysters", "Squid", "Octopus", "Seaweed", "Nori", "Kimchi", "Sauerkraut"
+        ];
+
+        document.getElementById('ingredientList').addEventListener('input', function(event) {
+            const input = event.target;
+            const currentValue = input.value;
+            const lastCommaIndex = currentValue.lastIndexOf(',');
+            
+            let query;
+            if (lastCommaIndex === -1) {
+                query = currentValue.trim();
+            } else {
+                query = currentValue.substring(lastCommaIndex + 1).trim();
+            }
+
+            const suggestionsContainer = document.getElementById('suggestions-container');
+            suggestionsContainer.innerHTML = '';
+            
+            if (query.length > 0) {
+                const filteredSuggestions = ingredients.filter(ingredient => ingredient.toLowerCase().startsWith(query.toLowerCase()));
+                
+                if (filteredSuggestions.length > 0) {
+                    suggestionsContainer.style.display = 'block';
+                    filteredSuggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.textContent = suggestion;
+                        suggestionItem.addEventListener('click', () => {
+                            if (lastCommaIndex === -1) {
+                                input.value = suggestion + ', ';
+                            } else {
+                                input.value = currentValue.substring(0, lastCommaIndex + 1) + ' ' + suggestion + ', ';
+                            }
+                            suggestionsContainer.style.display = 'none';
+                            input.focus();
+                        });
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                } else {
+                    suggestionsContainer.style.display = 'none';
+                }
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            const suggestionsContainer = document.getElementById('suggestions-container');
+            if (event.target.id !== 'ingredientList' && event.target.className !== 'suggestion-item') {
+                suggestionsContainer.style.display = 'none';
+            }
+        });

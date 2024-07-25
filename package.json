@@ -9,8 +9,12 @@
   "author": "Hanna George",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "db": "^6.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "mongo": "^0.1.0",
     "node-fetch": "^3.3.2",
     "pug": "^3.0.2"
   },

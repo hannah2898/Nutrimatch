@@ -1,13 +1,55 @@
 extends common/layout2
+
 block layout-content
     .glass.result-block
         h1.result-heading Here are your results!
         .result
-            each recipe,index in recipes
+            each recipe, index in recipes
+                - const isLiked = user.likedRecipes && user.likedRecipes.includes(recipe.id)
                 a(href=`/selectedrecipe/${recipe.id}`).recipe-link
                     .recipe-block
                         img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
                         .recipe-content
                             p.recipe-title #{recipe.title}
-                            a(href="#")
-                                img(src="/Images/Vector.svg", alt="heart",width="20px").like
+                            a(href="#" id=`like-${recipe.id}` onclick=`likeRecipe('${recipe.id}')`).liked
+                                img(src=isLiked ? "/Images/liked.svg" : "/Images/like.png", alt="heart", width="20px").like
+            each hit in edamamRecipes
+                - const recipe = hit.recipe
+                - const recipeId = recipe.uri.split('#recipe_')[1]
+                - const isLikedEdamam = user.likedRecipes && user.likedRecipes.includes(recipeId)
+                a(href=`/selectedrecipe/${recipeId}`).recipe-link
+                    .recipe-block
+                        img(src=`${recipe.image}`, alt="recipe image", width="160px").recipe-image
+                        .recipe-content
+                            p.recipe-title #{recipe.label}
+                            a(href="#" id=`like-${recipeId}` onclick=`likeRecipe('${recipeId}')`).liked
+                                img(src=isLikedEdamam ? "/Images/liked.svg" : "/Images/like.png", alt="heart", width="20px").like
+
+    script.
+        function likeRecipe(recipeId) {
+            const likeButton = document.getElementById(`like-${recipeId}`);
+            const likeImage = likeButton.querySelector('img');
+            const isLiked = likeImage.src.includes('liked.svg');
+
+            fetch('/likeRecipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ recipeId, action: isLiked ? 'unlike' : 'like' })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Recipe like/unlike response:', data);
+                // Update the image source based on the action
+                likeImage.src = isLiked ? "/Images/like.png" : "/Images/liked.svg";
+            })
+            .catch(error => {
+                alert("Login to your account to Like Recipes");
+            });
+        }

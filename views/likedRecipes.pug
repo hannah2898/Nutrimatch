@@ -1,0 +1,65 @@
+extends common/layout6
+
+block layout-content
+    .profile
+        h3.profile-heading
+            span Hello
+            span.firstname #{firstName}!
+        .liked-recipes
+            p Here are your
+            h4.sub-header Liked Recipes
+            if recipes.length === 0 && edamamRecipes.length === 0
+                .no-liked
+                    p Explore recipes and like them to add them to your Liked Recipes Collection.
+                    form(action="/FindRecipes") 
+                        .find-recipe-btn
+                            button(type="submit") Find Recipes
+            else
+                .result
+                    each recipe, index in recipes
+                        a(href=`/selectedrecipe/${recipe.id}`).recipe-link
+                            .recipe-block
+                                img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
+                                .recipe-content
+                                    p.recipe-title #{recipe.title}
+                                    a(href="#" id=`like-${recipe.id}` onclick=`likeRecipe('${recipe.id}')`).liked
+                                        img(src="/Images/liked.svg", alt="heart", width="20px").like
+                    each hit in edamamRecipes
+                        - const recipe = hit.recipe
+                        - const recipeId = recipe.uri.split('#recipe_')[1]
+                        a(href=`/selectedrecipe/${recipeId}`).recipe-link
+                            .recipe-block
+                                img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
+                                .recipe-content
+                                    p.recipe-title #{recipe.label}
+                                    a(href="#" id=`like-${recipeId}` onclick=`likeRecipe('${recipeId}')`).liked
+                                        img(src="/Images/liked.svg", alt="heart", width="20px").like
+
+    script.
+        function likeRecipe(recipeId) {
+            const likeButton = document.getElementById(`like-${recipeId}`);
+            const likeImage = likeButton.querySelector('img');
+            const isLiked = likeImage.src.includes('liked.svg');
+
+            fetch('/likeRecipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ recipeId, action: isLiked ? 'unlike' : 'like' })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Recipe like/unlike response:', data);
+                // Update the image source based on the action
+                likeImage.src = isLiked ? "/Images/like.png" : "/Images/liked.svg";
+            })
+            .catch(error => {
+                alert("Login to your account to Like Recipes");
+            });
+        }

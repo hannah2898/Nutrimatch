@@ -1,31 +1,44 @@
 const unsplash = "https://api.unsplash.com/";
-const unsplash_CLIENT_ID = process.env.unsplash_CLIENT_ID;
+const unsplash_CLIENT_ID = process.env.UNSPLASH_CLIENT_ID;
 const images = []; // Array to store images for each recipe
-//function to get images from unsplash API by using the recipe title
+
+// Function to get images from Unsplash API by using the recipe title
 async function getImages(recipe) {
+    let query = recipe.title || recipe.recipe.label;    
+    // Building the request URL with encoded query parameters
+    let reqUrl = `${unsplash}/search/photos?client_id=${unsplash_CLIENT_ID}&query=${encodeURIComponent(query)}&orientation=portrait&page=1&per_page=5`;
+    console.log("Request URL:", reqUrl);
 
-    let reqUrl = `${unsplash}/search/photos?client_id=${unsplash_CLIENT_ID}&query=${recipe.title}&orientation=portrait&page=1&per_page=5`;
-    const response = await fetch(reqUrl);
-    const data = await response.json();
+    try {
+        const response = await fetch(reqUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    const foodTags = ['food', 'meal', 'cooking', 'recipe', 'restaurant'];
+        const data = await response.json();
+        const foodTags = ['food', 'meal', 'cooking', 'recipe', 'restaurant', 'noodles', 'dinner', 'lunch','porridge','rolls', 'breakfast'];
 
-    // Filtering the results by only storing food related images directly
-    const filteredImages = data.results.filter(image => {
-        return image.tags.some(tag => foodTags.includes(tag.title.toLowerCase()));
-    });
+        // Filtering the results by only storing food-related images directly
+        const filteredImages = data.results.filter(image => {
+            return image.tags.some(tag => foodTags.includes(tag.title.toLowerCase()));
+        });
 
-    console.log(reqUrl);
-    console.log("filtered", filteredImages);
+        console.log("Filtered Images:", filteredImages);
 
-    if (filteredImages.length > 0) {
-        return filteredImages;
-    } else {
-        // No filtered images found, returning all results
-        return data.results;
+        if (filteredImages.length > 0) {
+            return filteredImages;
+        } else {
+            // No filtered images found, returning all results
+            return data.results;
+        }
+    } catch (error) {
+        console.error("Error fetching images:", error);
+        return [];
     }
 }
-//export functions
+
+// Export functions
 module.exports = {
     getImages
 };
