@@ -147,6 +147,7 @@ app.post("/signup/submit", async (request, response) => {
     }
 });
 app.get('/profile', (req, res) => {
+    console.log('Session:', req.session); // Debug log
     if (req.session.user) {
         const fullName = req.session.user.name;
         const firstName = fullName.split(' ')[0];
@@ -154,6 +155,7 @@ app.get('/profile', (req, res) => {
         // Pass the first name to the template
         res.render('profile', { title: "Profile",user: req.session.user, firstName: firstName,avatars: avatars });
     } else {
+        console.log('No session user found, redirecting to login'); // Debug log
         res.redirect('/');
     }
 });
