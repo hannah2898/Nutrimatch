@@ -20,7 +20,7 @@ block layout-content
             - const isLiked = user && user.likedRecipes && user.likedRecipes.includes(id)
             .mob-recipe
                 img(src=`${images[0].urls.regular}`, alt="Image").mob-image
-                h2.recipetitle-mob #{recipe.title}
+                h2.recipetitle-mob #{recipe.recipe.label}
             h3.dishDesc Dish Description
             .like-recipe
                 a(href="#" id=`like-${id}` onclick=`likeRecipe('${id}')`).liked 
