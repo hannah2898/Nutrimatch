@@ -457,6 +457,7 @@ app.post("/findRecipe/submit", async (request, response) => {
             // Store data in session
             request.session.showList = showList;
             request.session.showEdamamList = showEdamamList;
+            console.log('Session after fetching recipes:', request.session);
             response.redirect(`/Recipes`);
         }
     } catch (error) {
