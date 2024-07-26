@@ -79,10 +79,11 @@ app.post("/login/submit", async (request, response) => {
 
         // Find user by email
         const user = await db.collection("user_profile").findOne({ email });
+        request.session.user = user; // Store the entire user object in session
         if (!user) {
             return response.status(400).send(`
                 <script>
-                    alert("Invalid email or password.");
+                    alert("Seems like you don't have an account in this email. Please sign up.");
                     window.location.href = "/";
                 </script>
             `);
@@ -100,7 +101,7 @@ app.post("/login/submit", async (request, response) => {
         }
 
         // Store user info in session
-        request.session.user = user; // Store the entire user object in session
+        
         response.redirect(`/home`);
     } catch (error) {
         console.error("Error logging in: ", error);
