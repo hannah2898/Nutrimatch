@@ -8,13 +8,12 @@ const spoonacular = require("./modules/spoonacular/api");
 const edamam = require("./modules/edamam/api");
 const unsplash = require("./modules/unsplash/api");
 const MongoStore = require('connect-mongo');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');  // For password hashing
 const { MongoClient, ObjectId } = require('mongodb'); 
 dotenv.config();
-
+console.log("SPOONACULAR_API_KEY:", config.SPOONACULAR_API_KEY);
 const dbPassword = process.env.Mongo_Password;
-const dbUrl = `mongodb+srv://Admin:${dbPassword}@nutrimatch.ct3pcam.mongodb.net/Nutrimatch`;
+const dbUrl = `mongodb+srv://Admin:${dbPassword}@nutrimatch.ct3pcam.mongodb.net/`;
+console.log("dbUrl"+dbUrl);
 const client = new MongoClient(dbUrl);
 
 const app = express();
@@ -26,16 +25,6 @@ const sessionSecret = 'aS3cur3S3cr3tK3y!@#123';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    console.log('Connected to MongoDB');
-});
 
 // Setup for express-session
 app.use(session({
@@ -52,13 +41,11 @@ app.use(session({
         maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
     }
 }));
-
 // Middleware to check if user is logged in
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
 });
-
 // SET UP TEMPLATE ENGINES (PUG)
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -79,7 +66,6 @@ app.post("/login/submit", async (request, response) => {
 
         // Find user by email
         const user = await db.collection("user_profile").findOne({ email });
-        request.session.user = user; // Store the entire user object in session
         if (!user) {
             return response.status(400).send(`
                 <script>
@@ -99,9 +85,9 @@ app.post("/login/submit", async (request, response) => {
                 </script>
             `);
         }
-
+        console.log('Session before redirect:', request.session);
         // Store user info in session
-        
+        request.session.user = user; // Store the entire user object in session
         response.redirect(`/home`);
     } catch (error) {
         console.error("Error logging in: ", error);
@@ -112,7 +98,8 @@ const avatars = ['boy1.jpeg', 'girl1.jpeg', 'boy2.jpeg', 'girl2.jpeg', 'boy3.jpe
 app.get("/signup",async(request,response)=>{
     response.render ("signup", { title: "Sign up to nutrimatch", animate: true,avatars: avatars })
 })
-
+// Import necessary modules
+const bcrypt = require('bcrypt');  // For password hashing
 
 // Sign-Up Route
 app.post("/signup/submit", async (request, response) => {
@@ -148,7 +135,6 @@ app.post("/signup/submit", async (request, response) => {
     }
 });
 app.get('/profile', (req, res) => {
-    console.log('Session:', req.session); // Debug log
     if (req.session.user) {
         const fullName = req.session.user.name;
         const firstName = fullName.split(' ')[0];
@@ -156,7 +142,6 @@ app.get('/profile', (req, res) => {
         // Pass the first name to the template
         res.render('profile', { title: "Profile",user: req.session.user, firstName: firstName,avatars: avatars });
     } else {
-        console.log('No session user found, redirecting to login'); // Debug log
         res.redirect('/');
     }
 });
@@ -437,7 +422,7 @@ async function connection() {
 }
 
 app.get("/home", async (request, response) => {
-    console.log("request.session.user",request.session.user)
+    console.log('Session after redirect:', request.session);
     response.render("index", { title: "nutrimatch.", animate: true });
 });
 
