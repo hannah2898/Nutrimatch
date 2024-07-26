@@ -13,7 +13,7 @@ dotenv.config();
 console.log("SPOONACULAR_API_KEY:", config.SPOONACULAR_API_KEY);
 const dbPassword = process.env.Mongo_Password;
 const dbUrl = `mongodb+srv://Admin:${dbPassword}@nutrimatch.ct3pcam.mongodb.net/`;
-console.log("dbUrl"+dbUrl);
+console.log("dbUrl", dbUrl);
 const client = new MongoClient(dbUrl);
 
 const app = express();
@@ -25,6 +25,8 @@ const sessionSecret = 'aS3cur3S3cr3tK3y!@#123';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Trust proxy for Vercel
+app.set('trust proxy', 1);
 
 // Setup for express-session
 app.use(session({
@@ -37,16 +39,18 @@ app.use(session({
         ttl: 14 * 24 * 60 * 60 // 14 days
     }),
     cookie: {
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
         sameSite: 'lax'
     }
 }));
+
 // Middleware to check if user is logged in
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
 });
+
 // SET UP TEMPLATE ENGINES (PUG)
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -55,9 +59,10 @@ app.set("view engine", "pug");
 app.use(express.static(path.join(__dirname, "public")));
 
 // SET UP SOME PAGE ROUTES
-app.get("/",async(request,response)=>{
-    response.render ("login", { title: "Login to nutrimatch", animate: true })
-})
+app.get("/", (request, response) => {
+    response.render("login", { title: "Login to nutrimatch", animate: true });
+});
+
 app.post("/login/submit", async (request, response) => {
     try {
         const { email, password } = request.body;
@@ -86,15 +91,17 @@ app.post("/login/submit", async (request, response) => {
                 </script>
             `);
         }
-        console.log('Session before redirect:', request.session);
+        
         // Store user info in session
         request.session.user = user; // Store the entire user object in session
+        console.log('Session before redirect:', request.session);
         response.redirect(`/home`);
     } catch (error) {
         console.error("Error logging in: ", error);
         response.status(500).send("Internal Server Error");
     }
 });
+
 const avatars = ['boy1.jpeg', 'girl1.jpeg', 'boy2.jpeg', 'girl2.jpeg', 'boy3.jpeg', 'girl3.jpeg'];
 app.get("/signup",async(request,response)=>{
     response.render ("signup", { title: "Sign up to nutrimatch", animate: true,avatars: avatars })
@@ -446,6 +453,9 @@ app.post("/findRecipe/submit", async (request, response) => {
         let showList = await spoonacular.getRecipes(cuisine, diet, intolerances, ingredients);
         let showEdamamList = await edamam.getRecipes(cuisine, diet, intolerances, ingredients);
 
+        console.log("showList: ", showList);
+        console.log("showEdamamList: ", showEdamamList);
+
         if (!showList.results) showList.results = [];
         if (!showEdamamList.hits) showEdamamList.hits = [];
 
@@ -517,6 +527,13 @@ app.get(`/selectedrecipe/:id`, async (request, response) => {
     }
     
 });
+
+async function connection() {
+    await client.connect();
+    const db = client.db("Nutrimatch");
+    return db;
+}
+
 app.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
+    console.log(`Listening to requests on http://localhost:${port}`);
 });
