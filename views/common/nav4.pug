@@ -1,0 +1,36 @@
+.nav-bar
+    .logo 
+        a(href="/home") nutrimatch.
+    .nav-menu
+        a(href="/home") Home
+        a(href="/FindRecipes") Recipes
+        a(href="/about") About us
+        if user
+            a(href='/profile') Profile
+            a(href="/likedRecipes") Liked Recipes
+        else
+            a(href="/") Login
+//- Hamburger Icon
+.mobile-header
+    .logo
+        a(href="/home") nutrimatch.
+    .hamburger-menu(onclick="toggleNav()")
+        .bar
+        .bar
+        .bar
+
+//- Mobile Navigation Menu
+.mobile-nav
+    .mobile-nav-menu
+        a(href="/home") Home
+        a(href="/FindRecipes") Recipes
+        a(href="/about") About us
+        a(href="/" ) Login
+script.
+    const user = !{JSON.stringify(user)};
+     function toggleNav() {
+        const mobileNav = document.querySelector('.mobile-nav');
+        const hamburger= document.querySelector('.hamburger-menu');
+        mobileNav.classList.toggle('active');
+        hamburger.classList.toggle('active');
+    }
