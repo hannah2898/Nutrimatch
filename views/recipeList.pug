@@ -5,7 +5,7 @@ block layout-content
         h1.result-heading Here are your results!
         .result
             each recipe, index in recipes
-                - const isLiked =user && user.likedRecipes && user.likedRecipes.includes(recipe.id)
+                - const isLiked = user && user.likedRecipes && user.likedRecipes.includes(recipe.id)
                 a(href=`/selectedrecipe/${recipe.id}`).recipe-link
                     .recipe-block
                         img(src=`${recipe.image}`, alt="recipe image", width="200px").recipe-image
@@ -40,7 +40,11 @@ block layout-content
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    if (response.status === 401) {
+                        throw new Error('unauthorized');
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
                 }
                 return response.json();
             })
@@ -50,6 +54,10 @@ block layout-content
                 likeImage.src = isLiked ? "/Images/like.png" : "/Images/liked.svg";
             })
             .catch(error => {
-                alert("Login to your account to Like Recipes");
+                if (error.message === 'unauthorized') {
+                    alert("Login to your account to Like Recipes");
+                } else {
+                    console.error('An error occurred:', error);
+                }
             });
         }
