@@ -38,7 +38,8 @@ app.use(session({
     }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+        sameSite: 'lax'
     }
 }));
 // Middleware to check if user is logged in
@@ -457,7 +458,7 @@ app.post("/findRecipe/submit", async (request, response) => {
             // Store data in session
             request.session.showList = showList;
             request.session.showEdamamList = showEdamamList;
-            console.log('Session after fetching recipes:', request.session);
+            ('Session in findRecipe fetching recipes before redirecting:', request.session);
             response.redirect(`/Recipes`);
         }
     } catch (error) {
@@ -469,7 +470,8 @@ app.post("/findRecipe/submit", async (request, response) => {
 app.get("/Recipes", (request, response) => {
     const user = request.session.user || { likedRecipes: [] };
     let showList = request.session.showList || { results: [] };
-    let showEdamamList = request.session.showEdamamList || { hits: [] }; 
+    let showEdamamList = request.session.showEdamamList || { hits: [] };
+    console.log('Session after redirect fetching recipes:', request.session);
     response.render("recipeList", { title: "Recipe List", recipes: showList.results, edamamRecipes: showEdamamList.hits });
 });
 app.post('/likeRecipe', async (req, res) => {
