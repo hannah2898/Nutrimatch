@@ -446,9 +446,6 @@ app.post("/findRecipe/submit", async (request, response) => {
         let showList = await spoonacular.getRecipes(cuisine, diet, intolerances, ingredients);
         let showEdamamList = await edamam.getRecipes(cuisine, diet, intolerances, ingredients);
 
-        console.log("showList: ", showList);
-        console.log("showEdamamList: ", showEdamamList);
-
         if (!showList.results) showList.results = [];
         if (!showEdamamList.hits) showEdamamList.hits = [];
 
