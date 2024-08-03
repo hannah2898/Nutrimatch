@@ -1,6 +1,6 @@
 # NutriMatch Website
 
-![NutriMatch Logo](path/to/your/logo.png)
+![NutriMatch Logo](Git_Images/nutrimatch_logo)
 
 NutriMatch is a website designed to help users find recipes based on the ingredients they have in their pantry. Whether you're looking to cook with what you already have or trying to reduce food waste, NutriMatch makes it easy to discover delicious recipes tailored to your available ingredients.
 
