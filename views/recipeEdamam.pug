@@ -66,6 +66,7 @@ block layout-content
                     .ingredient-info
                         h3.tab-heading Ingredients
                         p.ingredient-desc Click on the ingredients to add to your cart
+                        a(href="/groceryList",id="grocery-link").grocery-link Go to Grocery List
                         ul.ingredient-list
                             each ingredient in recipe.recipe.ingredients
                                 li.ingredient(data-name=`${ingredient.food}`, data-ingredient=`${JSON.stringify(ingredient)}`) #{ingredient.food} : #{ingredient.quantity} #{ingredient.measure}
@@ -124,6 +125,16 @@ block layout-content
                         item.classList.add('added');
                     }
                 });
+            });
+            const groceryLink = document.getElementById('grocery-link');
+            groceryLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                const userLoggedIn = #{!!user}; // Assuming user variable is available
+                if (userLoggedIn) {
+                    window.location.href = '/groceryList';
+                } else {
+                    alert('Please log in to access the grocery list.');
+                }
             });
         });
 

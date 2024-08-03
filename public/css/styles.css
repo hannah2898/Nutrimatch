@@ -513,14 +513,13 @@ main {
     text-align: right;
     position: absolute;
     right: 50px;
-    bottom: 50px;
     animation: slideInFromBottom 0.8s ease-in-out;
 }
 .about-description{
     margin-top: 30px;
 }
 .about-description p{
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
 }
 /* ABOUT PAGE ENDS */
@@ -949,7 +948,11 @@ ul {
     z-index: 1000;
     transition: opacity 0.5s ease-in-out;
 }
-
+.grocery-link{
+    text-decoration: none;
+    color: #004D0C;
+    font-style: italic;
+}
 .recipebtn{
     width: 150px;
     padding: 20px;
