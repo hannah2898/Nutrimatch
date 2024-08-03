@@ -48,7 +48,8 @@ block layout-content
                     .ingredient-info
                         h3.tab-heading Ingredients
                         p.ingredient-desc Click on the ingredients to add to your cart
-                        a(href="/groceryList", id="grocery-link").grocery-link Go to Grocery List
+                        .grocery-link
+                            a(href="/groceryList", id="grocery-link") Go to Grocery List
                         ul.ingredient-list
                             each ingredient in recipe.extendedIngredients
                                 li.ingredient(data-name=`${ingredient.name}`, data-ingredient=`${JSON.stringify(ingredient)}`) 

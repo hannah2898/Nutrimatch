@@ -948,7 +948,7 @@ ul {
     z-index: 1000;
     transition: opacity 0.5s ease-in-out;
 }
-.grocery-link{
+.grocery-link a{
     text-decoration: none;
     color: #004D0C;
     font-style: italic;
