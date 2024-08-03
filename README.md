@@ -17,10 +17,9 @@ NutriMatch is a website designed to help users find recipes based on the ingredi
 
 ![Profile Page](/Git_Images/profile.png)
 
-<video width="600" controls>
-  <source src="/Git_Images/nutrimatch_video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Recipe List Page](/Git_Images/recipList.png)
+
+![Recipe Page](/Git_Images/recip.png)
 
 ## Technologies Used
 
