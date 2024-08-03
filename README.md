@@ -11,13 +11,17 @@ NutriMatch is a website designed to help users find recipes based on the ingredi
 - **Nutritional Information**: View detailed nutritional information for each recipe, including calorie count, macronutrient breakdown, and more.
 - **User-Friendly Interface**: Enjoy a clean and intuitive interface that makes it easy to navigate, search for recipes, and view recipe details.
 
-## Features
+## Images
+
 ![Home Page](/Git_Images/Home.png)
+
 ![Profile Page](/Git_Images/profile.png)
+
 <video width="600" controls>
   <source src="/Git_Images/nutrimatch_video.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+
 ## Technologies Used
 
 - **Frontend**:
